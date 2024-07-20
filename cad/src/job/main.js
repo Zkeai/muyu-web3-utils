@@ -7,15 +7,14 @@ class Cad {
     this.web3 = new Web3("https://pegasus.rpc.caduceus.foundation");
   }
 
-  async signMessage(address) {
+  async signInviteMessage(inviteAddress, address) {
     try {
-      let msg = b("0x0000000000000000000000000000000000000001" + address);
+      let msg = b(inviteAddress + address);
       let RZ =
         "0x73eafab85f7c58cebf8fda3a77933f086cba5ac42f63182934622e85cba078d5";
 
       let sigObj = await this.web3.eth.accounts.sign(msg, RZ);
       let signature = sigObj.signature;
-
       return signature;
     } catch (error) {
       throw new Error("Error signing message: " + error.message);
@@ -105,7 +104,7 @@ class Cad {
         if (result.data.status === 2) {
           return "签到成功";
         } else {
-          console.log(result);
+          console.log("[木鱼提示]签到中->", result);
         }
       } catch (error) {
         console.log(error);
@@ -113,6 +112,48 @@ class Cad {
       times += 2;
       await new Promise((resolve) => setTimeout(resolve, 2000)); // 等待2秒钟
     }
+  }
+
+  async invite(token, inviter, privateKey) {
+    let wallet = this.web3.eth.accounts.privateKeyToAccount(privateKey);
+    let invitee = wallet.address.toLowerCase();
+
+    const signature = await this.signInviteMessage(inviter, invitee);
+    try {
+      const data = {
+        inviter: inviter,
+        invitee: invitee,
+        signature: signature,
+      };
+      const response = await fetch(
+        "https://mint.caduceus.foundation/api/v1/user/invite",
+        {
+          headers: {
+            accept: "application/json, text/plain, */*",
+            "accept-language": "zh,zh-CN;q=0.9,en;q=0.8",
+            "cache-control": "no-cache",
+            "content-type": "application/json",
+            pragma: "no-cache",
+            priority: "u=1, i",
+            "r-token": token,
+            "sec-ch-ua":
+              '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"macOS"',
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            cookie: "selectWallet=OKX",
+            Referer: "https://mint.caduceus.foundation/",
+            "Referrer-Policy": "origin",
+          },
+          body: `{"inviter":"${inviter}","invitee":"${invitee}","signature":"${signature}"}`,
+          method: "POST",
+        }
+      );
+      const responseData = await response.json();
+      return responseData;
+    } catch (error) {}
   }
 }
 

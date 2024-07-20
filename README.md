@@ -11,3 +11,13 @@ nodejs
 cd [项目目录]
 npm install
 node XXXX.js
+
+### 关于作者
+
+木鱼
+wechat: muyuai1
+github:'https://github.com/zkeai',
+youtube:'https://www.youtube.com/channel/UClhZUsoeyNF5kDZ-OO4y0sw',
+twitter:'https://x.com/lemox66',
+dianbao:'https://t.me/+E3Q1hMARTfozNjQ1',
+discord:'https://discord.gg/TUAP6N3C'

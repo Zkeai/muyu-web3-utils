@@ -1,5 +1,5 @@
 import Cad from "./src/job/main.js";
-import YesCaptch from "./src/yesCaptcha/yesCaptcha.js";
+import Ttorc from "./src/ttorc/ttorc.js";
 import { readFile } from "fs/promises";
 import path from "path";
 import jsonData from "./src/config/damaKey.json" assert { type: "json" };
@@ -24,19 +24,34 @@ async function processFileLines(filePath, clientKey, inviter) {
 }
 
 async function job(clientKey, inviter, privateKey) {
-  const yesCaptcha = new YesCaptch(
+  const ttorc = new Ttorc(
     clientKey,
-    "9d92cba2-ef28-49e0-96dc-9db26a4c786e",
-    "https://mint.caduceus.foundation",
-    "HCaptchaTaskProxyless"
+    "e5cf8ccc7e40a0cf260aea741978f5e9",
+    "42",
+    "d355d3bf29d3c17c463aafb0e0a5748b"
   );
-  const taskId = await yesCaptcha.createTask();
-  const gRecaptchaResponse = await yesCaptcha.getResponse(taskId);
+  let boo = false;
+  var response = "";
+  while (!boo) {
+    const res = await ttorc.createTask();
+    response = await ttorc.getResponse(res);
+    if (response) {
+      boo = true;
+    }
+  }
 
   const cad = new Cad();
 
-  const res = await cad.invite(gRecaptchaResponse, inviter, privateKey);
-  console.log(res);
+  const invite_res = await cad.invite_jy(
+    response.captchaId,
+    response.captchaOutput,
+    response.genTime,
+    response.lotNumber,
+    response.passToken,
+    inviter,
+    privateKey
+  );
+  console.log(invite_res);
 }
 
 //启动

@@ -12,6 +12,11 @@ cd [项目目录]
 npm install
 node XXXX.js
 
+### 打码工具
+
+ttorc：https://www.ttocr.com/user/index.html
+yesCapatch：https://yescaptcha.com/i/lgnKMp
+
 ### 关于作者
 
 木鱼

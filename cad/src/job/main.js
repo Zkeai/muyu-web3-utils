@@ -152,7 +152,8 @@ class Cad {
         const result = await response.json();
 
         if (result.data.status === 2) {
-          return "签到成功";
+          console.log("[木鱼提示]签到成功");
+          return "[木鱼提示]签到成功";
         } else {
           console.log("[木鱼提示]签到中->", result);
         }
